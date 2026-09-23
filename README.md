@@ -1,44 +1,114 @@
 
+
+````markdown
 # Docker_Naj
 
-# Dockerized Full-Stack Student Registration Application
+## Full-Stack Student Registration Application with Docker and Kubernetes
 
-This project is a full-stack Student Registration Application containerized using Docker and Docker Compose.
+A containerized full-stack Student Registration Application built with **Node.js, Express.js, Python, and Flask**, and deployed locally using **Docker, Docker Compose, Kubernetes, and Minikube**.
 
-The application consists of a Node.js/Express frontend and a Python/Flask backend. The frontend provides a student registration form and sends the submitted data to the Flask backend for processing.
-
----
-
-## Objective
-
-The objectives of this project are:
-
-- Create a Node.js and Express.js frontend.
-- Create a Python and Flask backend.
-- Create separate Dockerfiles for frontend and backend.
-- Connect the frontend and backend using Docker Compose.
-- Run both services as Docker containers.
-- Build Docker images.
-- Push Docker images to Docker Hub.
-- Push the complete project source code to GitHub.
+The project demonstrates the complete workflow of developing a multi-service application, containerizing its components, managing communication between services, and deploying the containerized application to a local Kubernetes cluster.
 
 ---
 
-## Technologies Used
+## 1. Project Overview
 
-- Node.js
-- Express.js
-- Python
-- Flask
-- Docker
-- Docker Compose
-- Git
-- GitHub
-- Docker Hub
+This project consists of two application components:
+
+- **Frontend:** Node.js with Express.js
+- **Backend:** Python with Flask
+
+The frontend provides a Student Registration Form where users can enter:
+
+- Student Name
+- Email Address
+- Course
+
+The submitted information is sent from the Express.js frontend to the Flask backend for processing.
+
+The application was implemented in two stages:
+
+### Stage 1 — Docker
+
+The frontend and backend were containerized using Docker and orchestrated locally using Docker Compose.
+
+### Stage 2 — Kubernetes
+
+The Dockerized application was deployed to a local Kubernetes cluster using Minikube.
+
+Kubernetes Deployments manage the application containers, while Kubernetes Services provide networking and service discovery between the frontend and backend.
 
 ---
 
-## Project Structure
+# 2. Objectives
+
+The main objectives of this project are:
+
+- Develop a full-stack web application.
+- Create a Node.js/Express.js frontend.
+- Create a Python/Flask backend.
+- Containerize both application components using Docker.
+- Configure communication between frontend and backend services.
+- Run the application using Docker Compose.
+- Build and publish Docker images.
+- Maintain the project source code using Git and GitHub.
+- Deploy the Dockerized application to Kubernetes.
+- Create Kubernetes Deployments and Services.
+- Use Minikube for local Kubernetes deployment.
+- Verify Kubernetes resources and application functionality.
+- Test frontend-to-backend communication inside the Kubernetes cluster.
+
+---
+
+# 3. Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| Node.js | Frontend runtime |
+| Express.js | Frontend web framework |
+| Python | Backend programming language |
+| Flask | Backend web framework |
+| Docker | Application containerization |
+| Docker Compose | Multi-container application management |
+| Kubernetes | Container orchestration |
+| Minikube | Local Kubernetes cluster |
+| kubectl | Kubernetes command-line interface |
+| Git | Version control |
+| GitHub | Source code hosting |
+| Docker Hub | Container image registry |
+
+---
+
+# 4. Application Architecture
+
+## High-Level Architecture
+
+```text
+                    User / Browser
+                          |
+                          |
+                          v
+              +-----------------------+
+              |   Express.js Frontend |
+              |       Port 3000        |
+              +-----------------------+
+                          |
+                          |
+                 HTTP Request
+                          |
+                          v
+              +-----------------------+
+              |    Flask Backend      |
+              |       Port 5000       |
+              +-----------------------+
+                          |
+                          v
+                   Form Processing
+````
+
+---
+
+# 5. Project Structure
 
 ```text
 Docker_Naj/
@@ -54,153 +124,164 @@ Docker_Naj/
 │   ├── package.json
 │   └── package-lock.json
 │
+├── k8s/
+│   ├── backend-deployment.yaml
+│   ├── backend-service.yaml
+│   ├── frontend-deployment.yaml
+│   └── frontend-service.yaml
+│
 ├── docker-compose.yml
 ├── .gitignore
 └── README.md
-````
-
----
-
-## Application Architecture
-
-```text
-Browser
-   |
-   | Port 3000
-   v
-Node.js / Express Frontend
-   |
-   | Docker Network
-   v
-Python / Flask Backend
-   |
-   | Port 5000
-   v
-Form Data Processing
 ```
 
 ---
 
-## Frontend
+# 6. Frontend
 
-The frontend is developed using Node.js and Express.js.
+The frontend is implemented using **Node.js and Express.js**.
 
-It provides a Student Registration Form containing:
+It provides the Student Registration Form and handles incoming browser requests.
 
-* Name
-* Email
-* Course
+### Frontend Responsibilities
 
-The frontend receives the submitted form data and sends it to the Flask backend.
+* Display the registration form.
+* Accept student information.
+* Receive form submissions.
+* Send submitted information to the Flask backend.
+* Display the backend response to the user.
 
-**Frontend Port:** `3000`
+### Port
 
----
-
-## Backend
-
-The backend is developed using Python and Flask.
-
-The Flask backend receives the submitted student information from the frontend and processes the data.
-
-**Backend Port:** `5000`
+```text
+3000
+```
 
 ---
 
-## Docker Configuration
+# 7. Backend
 
-The project contains separate Dockerfiles for the frontend and backend.
+The backend is implemented using **Python and Flask**.
 
-### Frontend Dockerfile
+It receives registration data from the frontend and processes the submitted information.
+
+### Backend Responsibilities
+
+* Receive registration requests.
+* Process submitted student information.
+* Return a response to the frontend.
+
+### Port
+
+```text
+5000
+```
+
+---
+
+# 8. Docker Implementation
+
+Both application components are containerized independently.
+
+Separate Dockerfiles are provided for:
+
+* Frontend
+* Backend
+
+This allows each service to be built, started, and managed independently.
+
+---
+
+## 8.1 Frontend Dockerfile
 
 The frontend Dockerfile:
 
-* Uses Node.js 18.
-* Creates a working directory.
-* Copies the package files.
-* Installs the required npm packages.
-* Copies the frontend source code.
-* Exposes port 3000.
-* Starts the Express application.
-
-### Backend Dockerfile
-
-The backend Dockerfile:
-
-* Uses Python 3.11.
-* Creates a working directory.
-* Copies the requirements file.
-* Installs Flask and required dependencies.
-* Copies the backend source code.
-* Exposes port 5000.
-* Starts the Flask application.
+1. Uses a Node.js base image.
+2. Creates the application working directory.
+3. Copies the package configuration files.
+4. Installs the required npm dependencies.
+5. Copies the application source code.
+6. Exposes port `3000`.
+7. Starts the Express.js application.
 
 ---
 
-## Docker Compose
+## 8.2 Backend Dockerfile
 
-Docker Compose is used to build and run both services together.
+The backend Dockerfile:
 
-The services are:
+1. Uses a Python base image.
+2. Creates the application working directory.
+3. Copies `requirements.txt`.
+4. Installs the required Python dependencies.
+5. Copies the Flask application.
+6. Exposes port `5000`.
+7. Starts the Flask application.
 
-* `backend`
-* `frontend`
+---
 
-The frontend communicates with the backend using the Docker Compose service name.
+# 9. Docker Compose
+
+Docker Compose is used to run the frontend and backend together.
+
+The application consists of two services:
+
+```text
+frontend
+backend
+```
+
+Docker Compose provides a shared network that allows the frontend container to communicate with the backend using the backend service name.
 
 ### Backend Service
 
 ```text
-http://backend:5000
+backend:5000
 ```
 
-### Frontend Service
+### Frontend Application
 
 ```text
 http://localhost:3000
 ```
 
-Both services run in the Docker Compose network, allowing the frontend container to communicate with the backend container.
-
 ---
 
-## How to Run the Application
+# 10. Running the Application with Docker
 
-Make sure Docker and Docker Compose are installed on your system.
-
-### 1. Clone the Repository
+## Step 1 — Clone the Repository
 
 ```bash
 git clone https://github.com/NajPathan-Devops/Docker_Naj.git
 ```
 
-### 2. Go to the Project Directory
+## Step 2 — Navigate to the Project
 
 ```bash
 cd Docker_Naj
 ```
 
-### 3. Build the Docker Images
+## Step 3 — Build the Images
 
 ```bash
 docker compose build
 ```
 
-### 4. Start the Containers
+## Step 4 — Start the Application
 
 ```bash
 docker compose up -d
 ```
 
-### 5. Check the Running Containers
+## Step 5 — Verify Containers
 
 ```bash
 docker compose ps
 ```
 
-### 6. Open the Application
+## Step 6 — Access the Application
 
-Open the following address in a web browser:
+Open:
 
 ```text
 http://localhost:3000
@@ -208,19 +289,9 @@ http://localhost:3000
 
 ---
 
-## Stop the Application
+# 11. Docker Images
 
-To stop and remove the containers:
-
-```bash
-docker compose down
-```
-
----
-
-## Docker Images
-
-The following Docker images were created and pushed to Docker Hub.
+The application images were built and published to Docker Hub.
 
 ### Backend Image
 
@@ -234,152 +305,615 @@ najpathan/docker-backend:latest
 najpathan/docker-frontend:latest
 ```
 
----
-
-## Docker Hub
-
-**Docker Hub Username:**
+Docker Hub username:
 
 ```text
 najpathan
 ```
 
-### Backend Image
+---
+
+# 12. Application Workflow
+
+The application follows the following request flow:
+
+```text
+User
+  |
+  v
+Student Registration Form
+  |
+  v
+Express.js Frontend
+  |
+  v
+Flask Backend
+  |
+  v
+Form Processing
+  |
+  v
+Response
+  |
+  v
+Frontend
+  |
+  v
+User
+```
+
+### Submission Process
+
+1. The user opens the Student Registration Form.
+2. The user enters the required information.
+3. The form is submitted to the Express.js frontend.
+4. The frontend sends the information to the Flask backend.
+5. The Flask backend processes the request.
+6. The backend returns a response.
+7. The frontend displays the result.
+
+---
+
+# 13. Kubernetes Deployment
+
+After successfully containerizing the application, the same Docker images were deployed to a local Kubernetes cluster using **Minikube**.
+
+The Kubernetes deployment consists of:
+
+* Backend Deployment
+* Backend Service
+* Frontend Deployment
+* Frontend Service
+
+---
+
+# 14. Kubernetes Architecture
+
+```text
+                         Browser
+                            |
+                            |
+                    NodePort :3000
+                            |
+                            v
+                 +----------------------+
+                 |  Frontend Service    |
+                 |  frontend-service    |
+                 +----------------------+
+                            |
+                            v
+                 +----------------------+
+                 | Frontend Deployment  |
+                 | Node.js / Express     |
+                 | Port 3000             |
+                 +----------------------+
+                            |
+                            |
+                 backend-service:5000
+                            |
+                            v
+                 +----------------------+
+                 |   Backend Service    |
+                 |   ClusterIP :5000    |
+                 +----------------------+
+                            |
+                            v
+                 +----------------------+
+                 | Backend Deployment   |
+                 | Python / Flask       |
+                 | Port 5000            |
+                 +----------------------+
+```
+
+---
+
+# 15. Kubernetes Configuration Files
+
+The Kubernetes configuration files are stored inside the `k8s/` directory.
+
+```text
+k8s/
+├── backend-deployment.yaml
+├── backend-service.yaml
+├── frontend-deployment.yaml
+└── frontend-service.yaml
+```
+
+---
+
+## 15.1 Backend Deployment
+
+File:
+
+```text
+k8s/backend-deployment.yaml
+```
+
+The Backend Deployment manages the Flask application container.
+
+Docker image:
 
 ```text
 najpathan/docker-backend:latest
 ```
 
-### Frontend Image
+Container port:
+
+```text
+5000
+```
+
+The deployment is configured with one replica.
+
+---
+
+## 15.2 Backend Service
+
+File:
+
+```text
+k8s/backend-service.yaml
+```
+
+The backend is exposed internally using a Kubernetes `ClusterIP` Service.
+
+```text
+Service Name: backend-service
+Port: 5000
+Type: ClusterIP
+```
+
+The service provides an internal DNS name:
+
+```text
+backend-service:5000
+```
+
+This allows other Kubernetes workloads to communicate with the Flask backend.
+
+---
+
+## 15.3 Frontend Deployment
+
+File:
+
+```text
+k8s/frontend-deployment.yaml
+```
+
+The Frontend Deployment manages the Node.js/Express application.
+
+Docker image:
 
 ```text
 najpathan/docker-frontend:latest
 ```
 
+Container port:
+
+```text
+3000
+```
+
+The deployment also defines the backend URL:
+
+```text
+BACKEND_URL=http://backend-service:5000
+```
+
 ---
 
-## GitHub Repository
+## 15.4 Frontend Service
+
+File:
+
+```text
+k8s/frontend-service.yaml
+```
+
+The frontend is exposed using a Kubernetes `NodePort` Service.
+
+```text
+Service Name: frontend-service
+Port: 3000
+Type: NodePort
+```
+
+This makes the frontend accessible from outside the Kubernetes cluster through Minikube.
+
+---
+
+# 16. Kubernetes Networking
+
+One important configuration difference between Docker Compose and Kubernetes is service discovery.
+
+In Kubernetes, the frontend must not use:
+
+```text
+http://localhost:5000
+```
+
+because `localhost` inside the frontend container refers to the frontend container itself.
+
+Instead, the frontend uses the Kubernetes Service:
+
+```text
+http://backend-service:5000
+```
+
+The environment variable configured in the frontend Deployment is:
+
+```text
+BACKEND_URL=http://backend-service:5000
+```
+
+Kubernetes DNS resolves `backend-service` to the backend Service.
+
+This enables communication between the frontend and backend without exposing the backend directly to the external network.
+
+---
+
+# 17. Minikube Environment
+
+The application was deployed using Minikube with the Docker driver.
+
+Environment used:
+
+```text
+Minikube:      v1.39.0
+kubectl:       v1.36.4
+Kubernetes:    v1.37.0
+Driver:        Docker
+```
+
+---
+
+# 18. Starting Minikube
+
+Start the local Kubernetes cluster:
+
+```bash
+minikube start --driver=docker
+```
+
+Verify the cluster:
+
+```bash
+minikube status
+```
+
+---
+
+# 19. Loading Docker Images into Minikube
+
+The Docker images were loaded directly into the Minikube environment.
+
+### Backend
+
+```bash
+minikube image load najpathan/docker-backend:latest
+```
+
+### Frontend
+
+```bash
+minikube image load najpathan/docker-frontend:latest
+```
+
+The Kubernetes Deployments use:
+
+```yaml
+imagePullPolicy: Never
+```
+
+This ensures Kubernetes uses the locally loaded images instead of attempting to download them from a remote registry.
+
+---
+
+# 20. Deploying the Application
+
+Navigate to the project directory:
+
+```bash
+cd ~/Docker_Naj
+```
+
+Apply all Kubernetes manifests:
+
+```bash
+kubectl apply -f k8s/
+```
+
+This creates the required Kubernetes resources.
+
+---
+
+# 21. Verifying Kubernetes Pods
+
+Run:
+
+```bash
+kubectl get pods
+```
+
+The backend and frontend pods should reach:
+
+```text
+READY   1/1
+STATUS  Running
+```
+
+Example:
+
+```text
+NAME                                  READY   STATUS
+backend-deployment-xxxxx              1/1     Running
+frontend-deployment-xxxxx             1/1     Running
+```
+
+---
+
+# 22. Verifying Kubernetes Deployments
+
+Run:
+
+```bash
+kubectl get deployments
+```
+
+Expected deployments:
+
+```text
+backend-deployment
+frontend-deployment
+```
+
+Both deployments should report:
+
+```text
+READY       1/1
+AVAILABLE   1
+```
+
+---
+
+# 23. Verifying Kubernetes Services
+
+Run:
+
+```bash
+kubectl get services
+```
+
+The application contains two application services.
+
+### Backend
+
+```text
+Name: backend-service
+Type: ClusterIP
+Port: 5000
+```
+
+### Frontend
+
+```text
+Name: frontend-service
+Type: NodePort
+Port: 3000
+```
+
+---
+
+# 24. Accessing the Application
+
+The frontend is exposed through the Kubernetes NodePort service.
+
+Run:
+
+```bash
+minikube service frontend-service --url
+```
+
+Minikube generates a local URL.
+
+Open the generated URL in a web browser.
+
+The Student Registration Form can then be accessed through the Kubernetes deployment.
+
+---
+
+# 25. Application Verification
+
+The Kubernetes deployment was successfully verified.
+
+The following components were tested:
+
+* Minikube cluster
+* Backend Pod
+* Frontend Pod
+* Backend Deployment
+* Frontend Deployment
+* Backend Service
+* Frontend Service
+* Frontend-to-backend communication
+* Student Registration Form
+* Form submission
+
+The application successfully displayed:
+
+```text
+Form Submitted Successfully
+```
+
+after submitting the registration form.
+
+---
+
+# 26. Kubernetes Commands Reference
+
+### Start Minikube
+
+```bash
+minikube start --driver=docker
+```
+
+### Check Minikube
+
+```bash
+minikube status
+```
+
+### Load Backend Image
+
+```bash
+minikube image load najpathan/docker-backend:latest
+```
+
+### Load Frontend Image
+
+```bash
+minikube image load najpathan/docker-frontend:latest
+```
+
+### Deploy Kubernetes Resources
+
+```bash
+kubectl apply -f k8s/
+```
+
+### Check Pods
+
+```bash
+kubectl get pods
+```
+
+### Check Deployments
+
+```bash
+kubectl get deployments
+```
+
+### Check Services
+
+```bash
+kubectl get services
+```
+
+### Access Application
+
+```bash
+minikube service frontend-service --url
+```
+
+### Remove Kubernetes Resources
+
+```bash
+kubectl delete -f k8s/
+```
+
+### Stop Minikube
+
+```bash
+minikube stop
+```
+
+### Delete Minikube Cluster
+
+```bash
+minikube delete
+```
+
+---
+
+# 27. Documentation and Screenshots
+
+The project documentation includes screenshots demonstrating the successful Kubernetes deployment.
+
+### Screenshot 1 — Minikube Started
+
+Shows the successful initialization of the Minikube Kubernetes cluster.
+
+### Screenshot 2 — Kubernetes Pods
+
+Shows the backend and frontend pods in the `Running` state.
+
+### Screenshot 3 — Kubernetes Deployments
+
+Shows both deployments successfully running with one available replica.
+
+### Screenshot 4 — Kubernetes Services
+
+Shows the backend `ClusterIP` and frontend `NodePort` services.
+
+### Screenshot 5 — Application Verification
+
+Shows the Student Registration application successfully submitting the form through the Kubernetes deployment.
+
+---
+
+# 28. GitHub Repository
+
+The complete source code and Kubernetes configuration are maintained in the following GitHub repository:
 
 **Repository:**
 
 ```text
-NajPathan-Devops/Docker_Naj
+https://github.com/NajPathan-Devops/Docker_Naj
 ```
+
+The repository contains:
+
+* Frontend source code
+* Backend source code
+* Dockerfiles
+* Docker Compose configuration
+* Kubernetes manifests
+* Project documentation
 
 ---
 
-## Form Submission Workflow
+# 29. Project Status
 
-The application works as follows:
+## Docker Implementation
 
-1. The user opens the Student Registration Form.
-2. The user enters Name, Email, and Course.
-3. The form is submitted to the Node.js/Express frontend.
-4. The Node.js frontend sends the form data to the Flask backend.
-5. The Flask backend receives and processes the submitted information.
-6. The backend returns the response to the frontend.
-7. The frontend displays the submitted student information.
+* [x] Node.js/Express frontend
+* [x] Python/Flask backend
+* [x] Frontend Dockerfile
+* [x] Backend Dockerfile
+* [x] Docker Compose configuration
+* [x] Docker images built
+* [x] Containers tested
+* [x] Images published to Docker Hub
+* [x] Source code pushed to GitHub
 
----
+## Kubernetes Implementation
 
-## Verification
-
-The application was successfully tested using Docker Compose.
-
-Both containers were running successfully:
-
-* `flask_backend`
-* `node_frontend`
-
-The frontend was accessible through:
-
-```text
-http://localhost:3000
-```
-
-The Student Registration Form was successfully submitted through the Dockerized application.
-
-The submitted student information was successfully processed by the Flask backend and displayed by the frontend.
+* [x] Minikube configured
+* [x] Kubernetes cluster started
+* [x] Docker images loaded into Minikube
+* [x] Backend Deployment created
+* [x] Backend Service created
+* [x] Frontend Deployment created
+* [x] Frontend Service created
+* [x] Pods verified
+* [x] Deployments verified
+* [x] Services verified
+* [x] Frontend-to-backend communication configured
+* [x] Application accessed through Minikube
+* [x] Student registration successfully tested
 
 ---
 
-## Useful Docker Commands
+# 30. Conclusion
 
-### Build Images
+This project demonstrates the containerization and orchestration of a full-stack web application using modern DevOps technologies.
 
-```bash
-docker compose build
-```
+The application was first containerized using Docker, with separate containers for the Node.js/Express frontend and Python/Flask backend. Docker Compose was used to run the services together and establish communication between them.
 
-### Start Containers
+The containerized application was subsequently deployed to a local Kubernetes cluster using Minikube. Kubernetes Deployments were used to manage the application workloads, while Services provided internal service discovery and external access to the frontend.
 
-```bash
-docker compose up -d
-```
-
-### Check Containers
-
-```bash
-docker compose ps
-```
-
-### View Running Containers
-
-```bash
-docker ps
-```
-
-### View Container Logs
-
-```bash
-docker compose logs
-```
-
-### Stop and Remove Containers
-
-```bash
-docker compose down
-```
-
----
-
-## Git Commands Used
-
-### Initialize Git
-
-```bash
-git init
-```
-
-### Rename Branch to Main
-
-```bash
-git branch -M main
-```
-
-### Add Files
-
-```bash
-git add .
-```
-
-### Commit Changes
-
-```bash
-git commit -m "Complete Docker full-stack application"
-```
-
-### Add GitHub Remote
-
-```bash
-git remote add origin https://github.com/NajPathan-Devops/Docker_Naj.git
-```
-
-### Push Project to GitHub
-
-```bash
-git push -u origin main
-```
+The final deployment was successfully verified by checking the Kubernetes resources and submitting the Student Registration Form through the Minikube-hosted application.
 
 ---
 
@@ -390,53 +924,19 @@ git push -u origin main
 GitHub:
 
 ```text
-NajPathan-Devops
+https://github.com/NajPathan-Devops
 ```
 
 Docker Hub:
 
 ```text
-najpathan
+https://hub.docker.com/u/najpathan
 ```
 
 ---
 
-## Project Status
-
-**Completed**
-
-* [x] Node.js/Express frontend created
-* [x] Flask backend created
-* [x] Separate Dockerfiles created
-* [x] Docker Compose configuration created
-* [x] Frontend and backend connected
-* [x] Docker images built successfully
-* [x] Docker containers running successfully
-* [x] Student registration form tested successfully
-* [x] Backend Docker image pushed to Docker Hub
-* [x] Frontend Docker image pushed to Docker Hub
-* [x] Complete source code pushed to GitHub
-* [x] Project successfully containerized using Docker Compose
-
----
-
-## Conclusion
-
-This project demonstrates the containerization of a full-stack application using Docker and Docker Compose.
-
-The Node.js/Express frontend and Python/Flask backend are deployed as separate Docker containers and communicate with each other through the Docker Compose network.
-
-The Docker images were successfully built and pushed to Docker Hub, and the complete project source code was pushed to GitHub.
-
-```
-
-Your actual links are:
-
-- :contentReference[oaicite:0]{index=0}
-- :contentReference[oaicite:1]{index=1}
+**Project:** Docker_Naj
+**Deployment Platform:** Kubernetes / Minikube
+**Application Type:** Full-Stack Web Application
 
 
-```
-
-GitHub Repository
-https://github.com/NajPathan-Devops/Docker-Naj
